@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>time-machine</title>
+</head>
+<style>
+  body {
+    padding: 0;
+    margin: 0;
+  }
+  .upload-main {
+		display: flex;
+		height: 100vh;
+		width: 100%;
+		padding-bottom: 50upx;
+    color:  #e7e7e7;
+		flex-direction: column;
+		justify-content: end;
+    background: #000;
+  }
+  .content {
+		flex: 1;
+		height: 100%;
+	}
+	.title {
+		margin-left: 30upx;
+		font-size: 24upx;
+		color: #e7e7e7;
+	}
+	.bottom {
+		height: 50upx;
+		display: flex;
+		padding-top: 10upx;
+		flex-direction: row-reverse;
+	}
+  .title,
+	.bottom-item {
+		display: flex;
+		padding: 10px 0;
+		width: 140px;
+		justify-content: center;
+		background-color: #4c4a4b;
+		border-radius: 25px;
+	}
+  .bottom-item img {
+    width: 30px;
+    height: 30px;
+  }
+  .content-buttons {
+    display: flex;
+  }
+  .title:last-of-type {
+    margin-left: 20px;
+  }
+</style>
+<body>
+  <div class="upload-main">
+    <div class="content">
+			<div class="content-buttons">
+				<div class="title">
+					<span>测试参考</span>
+				</div>
+				<div class="title">
+					<span>添加音乐</span>
+				</div>
+			</div>
+		</div>
+		<div class="bottom" id='music-bottom'>
+			<div class="bottom-item">
+				<div class="checkmarkempty">
+					<img src="./checkmarkempty.png" alt="">
+				</div>
+			</div>
+		</div>	
+  </div>
+</body>
+</html>
