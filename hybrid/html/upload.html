@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>time-machine</title>
+  <link rel="stylesheet"  type="text/css"  href="./css/upload.css" >
+  <script src="./js/uni-sdk.js"></script>
+</head>
+<body>
+  <div class="upload-main">
+    <div class="btn upload">
+    	<input type="file" id="input">
+		<span>选择音乐</span>
+    </div>
+    <div class="btn" id="cancel">
+		<span>取消</span>
+    </div>
+  </div>
+</body>
+<script>
+	document.addEventListener('UniAppJSBridgeReady', function() {
+		document.querySelector('#cancel').onclick = function () {
+			uni.postMessage({
+				data: {
+					cancel: true
+				}
+			});
+		}
+		document.querySelector('#input').onchange = function(e) {
+			console.log(e);
+		}
+	})
+</script>
+</html>
