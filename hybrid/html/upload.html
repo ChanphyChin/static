@@ -48,6 +48,7 @@
     document.querySelector('.post-message-section').style.visibility = 'visible';
   }
 </script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <script src="./js/uni-sdk.js"></script>
 <script>
 	document.addEventListener('UniAppJSBridgeReady', function() {
@@ -55,12 +56,19 @@
       uni.getEnv(function(res) {
           alert('当前环境：' + JSON.stringify(res));
       });
-      window.postMessage({
-					data: {
-						cancel: true
-					}
+
+      uni.postMessage({
+        data: {
+          cancel: true
+        }
       });
-      uni.navigateBack();
+
+      // window.postMessage({
+			// 		data: {
+			// 			cancel: true
+			// 		}
+      // });
+      // uni.navigateBack();
 			// var userAgent = navigator.userAgent;
 			// if(/miniProgram/i.test(userAgent) && /micromessenger/i.test(userAgent)) {
       //   window.postMessage({
