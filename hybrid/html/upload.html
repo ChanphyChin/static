@@ -29,12 +29,14 @@
 						cancel: true
 					}
 				});
-			}
-			uni.postMessage({
-				data: {
-					cancel: true
-				}
-			});
+        uni.navigateBack();
+			} else {
+        uni.postMessage({
+          data: {
+            cancel: true
+          }
+        });
+      }
 		}
 		document.querySelector('#input').onchange = function(e) {
 			console.log(e);
