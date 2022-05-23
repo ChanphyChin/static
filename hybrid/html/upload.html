@@ -52,11 +52,30 @@
 <script>
 	document.addEventListener('UniAppJSBridgeReady', function() {
 		document.querySelector('#cancel').onclick = function () {
-			window.postMessage({
-        data: {
-          cancel: true
-        }
+      uni.getEnv(function(res) {
+          alert('当前环境：' + JSON.stringify(res));
       });
+      window.postMessage({
+					data: {
+						cancel: true
+					}
+      });
+      uni.navigateBack();
+			// var userAgent = navigator.userAgent;
+			// if(/miniProgram/i.test(userAgent) && /micromessenger/i.test(userAgent)) {
+      //   window.postMessage({
+			// 		data: {
+			// 			cancel: true
+			// 		}
+			// 	});
+      //   uni.navigateBack();
+			// } else {
+      //   uni.postMessage({
+      //     data: {
+      //       cancel: true
+      //     }
+      //   });
+      // }
 		}
 		document.querySelector('#input').onchange = function(e) {
 			console.log(e);
