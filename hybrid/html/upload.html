@@ -23,7 +23,6 @@
 	document.addEventListener('UniAppJSBridgeReady', function() {
 		document.querySelector('#cancel').onclick = function () {
 			var userAgent = navigator.userAgent;
-      alert(userAgent)
 			if(/miniProgram/i.test(userAgent) && /micromessenger/i.test(userAgent)) {
         alert('mini')
 				window.postMessage({
