@@ -24,6 +24,7 @@
 		document.querySelector('#cancel').onclick = function () {
 			var userAgent = navigator.userAgent;
 			if(/miniProgram/i.test(userAgent) && /micromessenger/i.test(userAgent)) {
+        alert('mini')
 				window.postMessage({
 					data: {
 						cancel: true
