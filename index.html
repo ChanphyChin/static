@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input {
+            padding: 8px;
+            width: 80px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #preview {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            max-width: 100%;
+        }
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .download-link {
+          background-color: #4CAF50;
+          color: white;
+          text-decoration: none;
+        }
+        .hidden-color-input {
+    opacity: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
+.color-preview {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background-color: #3498db;;
+}
+
+.color-preview:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>图片生成器</h1>
+        
+        <div class="input-group">
+            <label for="width">宽度(px):</label>
+            <input type="number" id="width" min="1" max="5000" value="300">
+            
+            <label for="height">高度(px):</label>
+            <input type="number" id="height" min="1" max="5000" value="200">
+        </div>
+        
+       <div class="color-picker">
+    <label for="color">背景颜色:</label>
+    <!-- 隐藏但保留位置 -->
+    <input type="color" id="color" value="#3498db" class="hidden-color-input">
+    <div id="color-preview" class="color-preview"></div>
+    <span id="color-code" class="color-code">#3498db</span>
+</div>
+        
+        <button id="download-container" style="color: white;"></button>
+        
+        <div id="result">
+            <img id="preview" style="display: none;">
+        </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+    const widthInput = document.getElementById('width');
+    const heightInput = document.getElementById('height');
+    const colorInput = document.getElementById('color');
+    const previewImg = document.getElementById('preview');
+    const downloadContainer = document.getElementById('download-container');
+    const colorPreview = document.getElementById('color-preview');
+
+    const colorCode = document.getElementById('color-code');
+    
+    // 添加输入变化监听器
+    widthInput.addEventListener('input', debounce(generateImage, 300));
+    heightInput.addEventListener('input', debounce(generateImage, 300));
+    colorInput.addEventListener('input', function() {
+        colorInput.style.backgroundColor = this.value;
+        debounce(generateImage, 300)();
+    });
+
+     // 点击颜色预览框时触发颜色选择
+    colorPreview.addEventListener('click', function() {
+        colorInput.click(); // 触发隐藏的颜色输入框
+    });
+
+    // 颜色变化时更新预览和代码
+    colorInput.addEventListener('input', function() {
+        const color = this.value;
+        colorPreview.style.backgroundColor = color;
+        colorCode.textContent = color;
+        debounce(generateImage, 300)();
+    });
+    
+    // 防抖函数，避免频繁触发
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                func.apply(context, args);
+            }, wait);
+        };
+    }
+    
+    function generateImage() {
+        const width = parseInt(widthInput.value);
+        const height = parseInt(heightInput.value);
+        const color = colorInput.value;
+        
+        if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+            return; // 不显示错误，只是不生成图片
+        }
+        
+        // 创建canvas元素
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        
+        // 填充颜色
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, width, height);
+        
+        // 添加文字信息
+        ctx.fillStyle = getContrastColor(color);
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${width} × ${height}`, width/2, height/2);
+        
+        // 转换为图片
+        const dataURL = canvas.toDataURL('image/png');
+        
+        // 显示预览
+        previewImg.src = dataURL;
+        previewImg.style.display = 'block';
+        previewImg.alt = `生成的图片 ${width}×${height}`;
+        
+        // 更新下载链接
+        updateDownloadLink(dataURL, width, height);
+    }
+    
+    // 根据背景色自动选择对比色（白或黑）
+    function getContrastColor(hexColor) {
+        const r = parseInt(hexColor.substr(1, 2), 16);
+        const g = parseInt(hexColor.substr(3, 2), 16);
+        const b = parseInt(hexColor.substr(5, 2), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness > 128 ? '#000000' : '#ffffff';
+    }
+    
+    function updateDownloadLink(dataURL, width, height) {
+        downloadContainer.innerHTML = '';
+        const downloadLink = document.createElement('a');
+        downloadLink.href = dataURL;
+        downloadLink.download = `image-${width}x${height}.png`;
+        downloadLink.textContent = '下载图片';
+        downloadLink.className = 'download-link';
+        downloadContainer.appendChild(downloadLink);
+    }
+    
+    // 初始生成一张图片
+    generateImage();
+});
+    </script>
+</body>
+</html>
